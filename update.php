@@ -61,14 +61,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 
 	#if there were no errors in the submitted fields, go ahead with the sql query
-	if (empty($name_err) && empty($amount_err)){			
-		$sql = "UPDATE $table SET Name=?,Type=?,Edition=?,Amount=? WHERE ID=?";
-		$stmt = $db -> prepare($sql);
-		$stmt ->execute([$name,$type,$edition,$amount,$id]);
+	if (empty($name_err) && empty($amount_err)){	
 
-		#go back to landing page because of successful submission
-		header("location: index.php");
-                exit();
+		$sql = "SELECT * FROM $table WHERE Name=? and Type=? AND Edition = ?";
+		$stmt = $db -> prepare($sql);
+		$stmt ->execute([$name,$type,$edition]);
+		if($stmt->rowCount() >0){
+			echo"This card already exists in the database.";	
+		}
+		else{
+			$sql = "UPDATE $table SET Name=?,Type=?,Edition=?,Amount=? WHERE ID=?";
+			$stmt = $db -> prepare($sql);
+			$stmt ->execute([$name,$type,$edition,$amount,$id]);
+
+			#go back to landing page because of successful submission
+			header("location: index.php");
+			exit();
+		}
 	}
 }
 
@@ -80,7 +89,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <form action="<?php echo htmlspecialchars($_SERVER["REQUEST_URI"]); ?>" method="post">
 	<div>
 		<label>Name: </label>
-               	<input type="text" name="name" value="<?php echo $name; ?>">
+		<input type="text" name="name" value="<?php echo $name; ?>">
+		<span><?php echo $name_err;?></span>
 	</div>
 	<div>
 		<label>Type: </label>
@@ -103,7 +113,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	</div>
 	<div>
 		<label>Amount</label>
-               	<input type="number" name="amount" min="0" value="<?php echo $amount; ?>">
+		<input type="number" name="amount" min="0" value="<?php echo $amount; ?>">
+		<span><?php echo $amount_err;?></span>
 	</div>
 
 	<button type="submit">Submit</button>
