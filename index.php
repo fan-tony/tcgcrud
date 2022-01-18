@@ -26,13 +26,14 @@ echo "<table border = '1|0' style='margin:0 auto;width:100%;border-spacing: 0px;
 ";
 
 foreach($db->query("SELECT * FROM $table") as $row) {
+	
 	echo "<tr>";
 		echo "<td style='text-align:center'>". $row['Name'] . "</td>";
 		echo "<td style='text-align:center'>". $row['Type'] . "</td>";
 		echo "<td style='text-align:center'>". $row['Edition'] . "</td>";
 		echo "<td style='text-align:center'>". $row['Amount'] . "</td>";
-		echo "<td style='text-align:center'><a href = 'update.php'>". 'Edit' . "</a></td>"; #Edit the selected card. 'Update' in CRUD
-		echo "<td style='text-align:center'><a href = 'delete.php'>". 'Delete' . "</a></td>"; #Delete the selected card. 'Delete' in CRUD
+		echo "<td style='text-align:center'><a href = 'update.php?id=". $row['ID'] ."'>". 'Edit' . "</a></td>"; #Hyperlink to edit the selected card. 'Update' in CRUD
+		echo "<td style='text-align:center'><a href = 'delete.php?id=". $row['ID'] ."'>". 'Delete' . "</a></td>"; #Hyperlink to delete the selected card. 'Delete' in CRUD
 	echo "</tr>";
 }
 

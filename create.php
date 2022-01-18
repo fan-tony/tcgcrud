@@ -1,6 +1,6 @@
 <?php
 include 'config.php'; #access the database
-#include 'main.css'; #any necesssary css will be stored in this file
+include 'main.css'; #any necesssary css will be stored in this file
 
 #variables to be used in the form initialized as empty string
 $name =$type = $edition = $amount = "";
@@ -9,58 +9,43 @@ $name_err = $amount_err = "";
 #request method post means that a form has been submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	#$stmt = $db -> query("INSERT INTO tcg.yugioh (Name,Type,Edition,Amount) VALUES ('Dark Magician','Monster', 'Unlimited', 3)");
-
-	
-	#user proof the name, can't be empty
+	#user proof the name. the name can't be an empty field
+	$input_name = trim($_POST["name"]);
 	if(empty($input_name)){
         	$name_err = "Please enter a name.";
-	} else{
-		$input_name = trim($_POST["name"]);
+	}else{
+		$name = $input_name;
 	}
-	
-	$input_type = trim($_POST["type"]);
-	$input_edition = trim($_POST["edition"]);
+
+	#type and edition are dropdowns so they can't have errors because it must be selected
+	$type = trim($_POST["type"]);
+	$edition = trim($_POST["edition"]);
 
 	#user proof the number to be only positive
+	$input_amount = trim($_POST["amount"]);
 	if (!ctype_digit($input_amount)){
 		$amount_err = "Please enter a positive integer number.";
 	}elseif(empty($input_amount)){
 		$amount_err = "Please enter an amount.";
 	}else{
-		$input_amount = trim($_POST["amount"]);
+		$amount = trim($_POST["amount"]);
 	}
-	
-	if (empty($name_err) && empty($amount_err)){
-		$stmt = $db -> query("INSERT INTO tcg.yugioh (Name,Type,Edition,Amount) VALUES ('Dark Magician','Monster', 'Unlimited', 3)");
-		#THIS BELOW IS BROKEN
-	/*
-		$sql = "INSERT INTO $table (Name,Type,Edition,Amount) VALUES(:name,:type,:edition,:amount);";
-	
-		#$db -> query("INSERT INTO yugioh (Name,Type,Edition,Amount) VALUES ('Dark Magician', 'Unlimited', 3);");
-		$stmt = $db -> prepare($sql)->execute([$input_name, $input_type,$input_edition,$input_amount]);
-	 */
-		
 
+	#if there were no errors in the submitted fields, go ahead with the sql query
+	if (empty($name_err) && empty($amount_err)){			
+		$sql = "INSERT INTO $table (Name,Type,Edition,Amount) VALUES(?,?,?,?)";
+		$stmt = $db -> prepare($sql);
+		$stmt ->execute([$name,$type,$edition,$amount]);
 
-		/*
-		$stmt = $db ->prepare("INSERT INTO $table (Name,Type,Edition,Amount) VALUES(:name,:type,:edition,:amount)");
-		$stmt ->bindParam(':name',$name);
-		$stmt ->bindParam(':type',$type);
-		$stmt ->bindParam(':edition',$edition);
-		$stmt ->bindParam(':amount',$amount);
-	
-		$stmt ->execute();
-		 */
-
-	}	
-
+		#go back to landing page because of successful submission
+		header("location: index.php");
+                exit();
+	}
 }
-elseif (empty($_POST)){
 ?>
 
 <!DOCTYPE html>
-<h2>Create Record</h2>
+<h2>Create Card Record</h2>
 
 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 	<div>
@@ -97,7 +82,7 @@ elseif (empty($_POST)){
 
 </form>
 
-<?php } ?>
+
 <!--
 
         <div class="form-group">
