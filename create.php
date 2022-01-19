@@ -31,8 +31,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		$amount = trim($_POST["amount"]);
 	}
 
-
-
 	#if there were no errors in the submitted fields, go ahead with the sql query
 	if (empty($name_err) && empty($amount_err)){			
 		
@@ -72,7 +70,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			<option>Monster</option>
 			<option>Spell</option>
 			<option>Trap</option>
-			<option>Pendulum</option>
 		</select>
 	</div>
 	<div>
@@ -92,25 +89,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	</div>
 
 	<button type="submit">Submit</button>
-	<!-- <input type="submit" value="Submit"> -->
 	<a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
 
 </form>
 
 
-<!--
-
-        <div class="form-group">
-        	<label>Address</label>
-                            <textarea name="address" class="form-control <?php echo (!empty($address_err)) ? 'is-invalid' : ''; ?>"><?php echo $address; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $address_err;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Salary</label>
-                            <input type="text" name="salary" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $salary; ?>">
-                            <span class="invalid-feedback"><?php echo $salary_err;?></span>
-                        </div>
-                        <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
- </form>
--->

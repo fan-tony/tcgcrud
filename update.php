@@ -62,11 +62,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	#if there were no errors in the submitted fields, go ahead with the sql query
 	if (empty($name_err) && empty($amount_err)){	
-
-		$sql = "SELECT * FROM $table WHERE Name=? and Type=? AND Edition = ?";
+	
+		$sql = "SELECT ID FROM $table WHERE Name=? and Type=? AND Edition = ?";
 		$stmt = $db -> prepare($sql);
 		$stmt ->execute([$name,$type,$edition]);
-		if($stmt->rowCount() >0){
+		$data=$stmt->fetch();#there is only one unique ID per monster/type/edition combination
+		
+	 	#if this card name/type/edition combination exists, and its id doesn't match the current page's card's id, then this form is trying to submit a duplicate so don't allow updating 	
+		if(isset($data['ID']) && $data['ID'] != $id){
 			echo"This card already exists in the database.";	
 		}
 		else{
@@ -78,6 +81,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			header("location: index.php");
 			exit();
 		}
+		 
 	}
 }
 
